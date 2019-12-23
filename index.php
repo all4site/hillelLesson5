@@ -10,61 +10,38 @@
 <body>
 <!--Данные надо воодить так http://localhost:3000/?role=admin&include=post-->
 <?php
-$role =
-		[
-				'admin', 'editor'
-		];
-$include =
-		[
-				'post', 'comments', 'statistics'
-		];
+$role =[
+				'admin' => ['post', 'comments', 'statistics'],
+				'editor'=> ['post', 'comments']
+			];
 
-$getRole = $_GET['role'];
-$getInclude = $_GET['include'];
-$setIncludeToArray = explode(',', $getInclude);
+$includeGet = $_GET['include'];
+$include =explode(',', $includeGet);
 
-if (!isset($getRole) || $getRole == '') {
-	echo 'Вы не ввели данные ROLE';
+$includeUser = $_GET['role'];
+$roleKeys = array_keys($role);
+
+if (!isset($includeGet) || $includeGet == '') {
+	echo 'Введите данные в поле INCLUDE';
 	die();
 }
 
-if (!isset($getInclude) || $getInclude == '') {
-	echo 'Вы не ввели данные INCLUDE';
+if (!isset($includeUser) && $includeUser == '') {
+	echo 'Введите данные в поле ROLE';
 	die();
 }
 
-foreach ($setIncludeToArray as $value) {
-	switch ($value) {
-		case $include[0]:
-			break;
-		case $include[1]:
-			break;
-		case $include[2]:
-			break;
-		default:
-			echo 'Значение INCLUDE введено неверно. Вы ввели ' . $value;
-			die();
+if (in_array($includeUser, $roleKeys)){
+	echo 'Привет ' .$includeUser;
+	echo '<br>'.'Вы запросили доступ к ';
+	foreach ($include as $value){
+		if (in_array($value, $role[$includeUser])){
+			echo "$value ";
+		}else echo '<br>'.'У вас нет доступа к '. $value;
 	}
-}
-if ($getRole == $role[0] || $getRole == $role[1]) {
+}else echo 'У вас нет прав ' . $includeUser . ' введите верное значение ROLE';
 
-	if ($getRole == $role[0]) {
-		echo 'Привет Админ ты запросил - ' . $getInclude;
-	}
 
-	if ($getRole == $role[1]) {
-		foreach ($setIncludeToArray as $value) {
-			if ($value == 'statistics') {
-				echo 'К разделу - ' . $value . ' Доступ запрещен';
-				die('');
-			}
-		}
-		echo 'Привет Редактор ты запросил - ' . $getInclude;
-
-	}
-} else {
-	echo 'У вас нет прав доступа';
-}
 ?>
 </body>
 </html>
